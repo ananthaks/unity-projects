@@ -74,7 +74,6 @@ public class Hacker : MonoBehaviour {
             case Screen.GuessPassword:
                 ProcessPassword(message);
                 break;
-
             case Screen.Win:
                 // TODO
                 break;
