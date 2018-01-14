@@ -70,7 +70,7 @@ public class Hacker : MonoBehaviour {
         {
             case Screen.MainMenu:
                 ProcessMainMenu(message);
-                break;
+                break; 
             case Screen.GuessPassword:
                 ProcessPassword(message);
                 break;
