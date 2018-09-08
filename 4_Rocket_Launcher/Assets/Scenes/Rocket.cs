@@ -8,6 +8,9 @@ public class Rocket : MonoBehaviour
     private Rigidbody m_rigidBody;
     private AudioSource m_audioSource;
 
+    [SerializeField] float Main_Thrust = 80f;
+    [SerializeField] float RCS_Thrust = 50f;
+
     //--------------------------------------
     // Start
     //
@@ -36,10 +39,34 @@ public class Rocket : MonoBehaviour
     //--------------------------------------
     private void HandleEvent()
     {
-        if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) // Thrust
+        Thrust();
+        Rotate();
+    }
+
+    //--------------------------------------
+    // OnCollisionEnter
+    //--------------------------------------
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch(collision.gameObject.tag)
         {
-            m_rigidBody.AddRelativeForce(Vector3.up);
-            if(!m_audioSource.isPlaying)
+            case "Friendly":
+                break;
+            default:
+                print("Error: Collided with unknown object");
+                break;
+        }
+    }
+
+    //--------------------------------------
+    // Thrust
+    //--------------------------------------
+    private void Thrust()
+    {
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) // Thrust
+        {
+            m_rigidBody.AddRelativeForce(Vector3.up * Main_Thrust * Time.deltaTime);
+            if (!m_audioSource.isPlaying)
             {
                 m_audioSource.Play();
             }
@@ -48,13 +75,28 @@ public class Rocket : MonoBehaviour
         {
             m_audioSource.Stop();
         }
-        if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) // Rotate Left
+    }
+
+    //--------------------------------------
+    // Rotate
+    //--------------------------------------
+    private void Rotate()
+    {
+        // Take manual control of the rotation
+        m_rigidBody.freezeRotation = true;
+
+        Vector3 torque = Vector3.forward * (RCS_Thrust * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) // Rotate Left
         {
-            m_rigidBody.AddRelativeTorque(Vector3.forward);
+            transform.Rotate(torque);
         }
-        if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) // Rotate Right
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) // Rotate Right
         {
-            m_rigidBody.AddRelativeTorque(Vector3.back);
+            transform.Rotate(-torque);
         }
+
+        // Resume physics control of rotation
+        m_rigidBody.freezeRotation = false;
     }
 }
