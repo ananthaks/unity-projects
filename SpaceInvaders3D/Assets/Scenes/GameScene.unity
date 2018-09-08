@@ -803,6 +803,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstacles: {fileID: 1575782778516406, guid: 4d1805cea8eb33e439963d175f4ccdfe, type: 2}
   spawnPoint: {x: 4, y: 4, z: 45}
+  obstacleCount: 0
+  startWaitTime: 1
+  spawnWaitTime: 0.5
+  waveSpawnTime: 4
 --- !u!1 &1313940981
 GameObject:
   m_ObjectHideFlags: 0

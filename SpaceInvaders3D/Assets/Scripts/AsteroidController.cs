@@ -19,24 +19,25 @@ public class AsteroidController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Clipper_Tag")
-        {
-            return;
-        }
-
         if(other.tag == "Player")
         {
             // TODO:
             //Instantiate(asteroidExplosion, transform.position, transform.rotation);
             //Instantiate(playerExplosion, transform.position, transform.rotation);
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+        else if(other.tag == "PlayerBolt")
+        {
+            //Instantiate(asteroidExplosion, transform.position, transform.rotation);
+            print("Asteroid::Destroy");
+            Destroy(other.gameObject);
+            Destroy(gameObject);
         }
         else
         {
-            //Instantiate(asteroidExplosion, transform.position, transform.rotation);
+            print("Asteroid::Destroy");
         }
-
-        Destroy(other.gameObject);
-        Destroy(gameObject);
     }
 	
 	

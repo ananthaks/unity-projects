@@ -6,11 +6,15 @@ public class GameController : MonoBehaviour
 {
     [SerializeField] GameObject obstacles;
     [SerializeField] Vector3 spawnPoint;
+    [SerializeField] int obstacleCount;
+    [SerializeField] float startWaitTime;
+    [SerializeField] float spawnWaitTime;
+    [SerializeField] float waveSpawnTime;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
-        SpawnWaves();
+        StartCoroutine(SpawnWaves());
 	}
 	
 	// Update is called once per frame
@@ -18,13 +22,21 @@ public class GameController : MonoBehaviour
     {
 		
 	}
-
-    void SpawnWaves()
+    IEnumerator SpawnWaves()
     {
-        Vector3 spawnPosition = new Vector3(Random.Range(-spawnPoint.x, spawnPoint.x), Random.Range(-spawnPoint.y, spawnPoint.y), spawnPoint.z);
-        Quaternion spawnRotation = Quaternion.identity;
-
-        Instantiate(obstacles, spawnPosition, spawnRotation);
+        yield return new WaitForSeconds(startWaitTime);
+        while(true)
+        {
+            for (int count = 0; count < obstacleCount; count++)
+            {
+                Vector3 spawnPosition = new Vector3(Random.Range(-spawnPoint.x, spawnPoint.x), Random.Range(-spawnPoint.y, spawnPoint.y), spawnPoint.z);
+                Quaternion spawnRotation = Quaternion.identity;
+                Instantiate(obstacles, spawnPosition, spawnRotation);
+                yield return new WaitForSeconds(spawnWaitTime);
+            }
+            yield return new WaitForSeconds(waveSpawnTime);
+        }
+        
     }
 
 }
