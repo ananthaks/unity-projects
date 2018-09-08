@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoltController : MonoBehaviour {
+public class MoveController : MonoBehaviour {
 
     private Rigidbody m_rigidBody;
 
