@@ -171,10 +171,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eb360907878c18408a033fa802b5e02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MainWeaponBolt: {fileID: 1690108423368338, guid: ae1b05cf5a2799f4cb540fbd9d46f1b7,
+  MainWeaponBolt: {fileID: 1617114160538288, guid: 1cc05f8b0f989c540884ae37a98baa9a,
     type: 2}
   shotspawn: {fileID: 4881560021226370}
-  speed: 10
   fireRate: 2
 --- !u!114 &114943974467873938
 MonoBehaviour:

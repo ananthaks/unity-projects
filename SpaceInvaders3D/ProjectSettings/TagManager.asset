@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - Obstacle
   - Asteroid
+  - Bolt
   layers:
   - Default
   - TransparentFX

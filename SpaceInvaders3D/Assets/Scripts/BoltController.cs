@@ -9,23 +9,21 @@ public class BoltController : MonoBehaviour
     [SerializeField] GameObject enemyExplosion;
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
 		
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 		
 	}
 
     void OnTriggerEnter(Collider other)
     {
-        print("Bolt::OnTriggerEnter");
-        Debug.Log(other.name);
-        Debug.Log(other.tag);
         if (other.tag == "Obstacle")
         {
-            print("OnTriggerEnter :: Asteroid");
             // TODO: Asteroid Explosion
             Destroy(other.gameObject);
             Destroy(gameObject);
@@ -39,6 +37,12 @@ public class BoltController : MonoBehaviour
         else if (other.tag == "Enemy")
         {
             // TODO: Make Enemy Explosion
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+        else if (other.tag == "Bolt")
+        {
+            // TODO: Make Bolt with Bolt Explosion
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
