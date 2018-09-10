@@ -64,3 +64,4 @@ MonoBehaviour:
   startWaitTime: 1
   spawnWaitTime: 0.5
   waveSpawnTime: 4
+  m_scoreText: {fileID: 0}

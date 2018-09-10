@@ -8,11 +8,17 @@ public class BoltController : MonoBehaviour
     [SerializeField] GameObject asteroidExplosion;
     [SerializeField] GameObject enemyExplosion;
 
+    private GameController gameController;
+
     // Use this for initialization
     void Start ()
     {
-		
-	}
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+        }
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -25,18 +31,25 @@ public class BoltController : MonoBehaviour
         if (other.tag == "Obstacle")
         {
             // TODO: Asteroid Explosion
+
+            gameController.AddPoints(1);
+
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
         else if (other.tag == "Player")
         {
             // TODO: Make Player Explosion
+            gameController.OnPlayerDestroyed();
+
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
         else if (other.tag == "Enemy")
         {
             // TODO: Make Enemy Explosion
+            gameController.AddPoints(2);
+
             Destroy(other.gameObject);
             Destroy(gameObject);
         }

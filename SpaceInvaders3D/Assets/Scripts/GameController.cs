@@ -9,7 +9,6 @@ public enum EnemyType
     AsteroidAndFighter,
 };
 
-
 public class GameController : MonoBehaviour
 {
     [SerializeField] GameObject[] obstacles = new GameObject[4];
@@ -20,6 +19,11 @@ public class GameController : MonoBehaviour
     [SerializeField] float startWaitTime;
     [SerializeField] float spawnWaitTime;
     [SerializeField] float waveSpawnTime;
+
+    public UnityEngine.UI.Text m_scoreText;
+
+    private int m_currentScore = 0;
+    private string m_scoreDefaultText = "Score : ";
 
     // Use this for initialization
     void Start ()
@@ -32,6 +36,7 @@ public class GameController : MonoBehaviour
     {
 		
 	}
+
     IEnumerator SpawnWaves()
     {
         yield return new WaitForSeconds(startWaitTime);
@@ -67,5 +72,32 @@ public class GameController : MonoBehaviour
             }
             yield return new WaitForSeconds(waveSpawnTime);
         }
+    }
+    public void AddPoints(int points)
+    {
+        m_currentScore += points;
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
+        m_scoreText.text = m_scoreDefaultText + m_currentScore;
+        Debug.Log(m_currentScore);
+    }
+
+    public void OnPlayerWin()
+    {
+        Debug.Log("Player Wins!");
+    }
+
+    public void OnPlayerDestroyed()
+    {
+        Debug.Log("Player Loses!");
+    }
+
+    public void QuitGame()
+    {
+        print("Quiting Game");
+        Application.Quit();
     }
 }

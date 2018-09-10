@@ -9,5 +9,4 @@ public class GameSceneController : MonoBehaviour
     {
         SceneManager.LoadScene(sceneIndex);
     }
-
 }

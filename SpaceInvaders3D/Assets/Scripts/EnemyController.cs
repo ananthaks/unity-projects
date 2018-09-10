@@ -6,7 +6,7 @@ public class EnemyController : MonoBehaviour
 {
 
     private Rigidbody m_rigidBody;
-    private AudioSource m_audioSource;
+    //private AudioSource m_audioSource;
 
     [SerializeField] GameObject MainWeaponBolt;
     [SerializeField] Transform shotspawn;
@@ -17,11 +17,19 @@ public class EnemyController : MonoBehaviour
     // Private members
     private float nextFire = 0.0f;
 
+    private GameController gameController;
+
     // Use this for initialization
     void Start()
     {
         m_rigidBody = GetComponent<Rigidbody>();
-        m_audioSource = GetComponent<AudioSource>();
+        //m_audioSource = GetComponent<AudioSource>();
+
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+        }
     }
 
     void FireWeapons()
@@ -31,10 +39,10 @@ public class EnemyController : MonoBehaviour
             nextFire = Time.time + fireRate;
             Instantiate(MainWeaponBolt, shotspawn.position, shotspawn.rotation);
 
-            if (!m_audioSource.isPlaying)
-            {
-                m_audioSource.Play();
-            }
+            //if (!m_audioSource.isPlaying)
+            //{
+                //m_audioSource.Play();
+            //}
         }
     }
 
@@ -43,6 +51,8 @@ public class EnemyController : MonoBehaviour
         if (other.tag == "Player")
         {
             // TODO: Make Explosion
+            gameController.OnPlayerDestroyed();
+
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
