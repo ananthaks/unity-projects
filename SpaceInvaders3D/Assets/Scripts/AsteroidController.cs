@@ -27,17 +27,6 @@ public class AsteroidController : MonoBehaviour
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
-        else if(other.tag == "PlayerBolt")
-        {
-            //Instantiate(asteroidExplosion, transform.position, transform.rotation);
-            print("Asteroid::Destroy");
-            Destroy(other.gameObject);
-            Destroy(gameObject);
-        }
-        else
-        {
-            print("Asteroid::Destroy");
-        }
     }
 	
 	

@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 {
 
     private Rigidbody m_rigidBody;
+    private AudioSource m_audioSource;
 
     [SerializeField] GameObject MainWeaponBolt;
     [SerializeField] Transform shotspawn;
@@ -32,17 +33,28 @@ public class PlayerController : MonoBehaviour
     void Start ()
     {
         m_rigidBody = GetComponent<Rigidbody>();
-
+        m_audioSource = GetComponent<AudioSource>();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    void FireWeapons()
     {
         if (Input.GetButton("Fire1") && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
             Instantiate(MainWeaponBolt, shotspawn.position, shotspawn.rotation);
+
+            if(!m_audioSource.isPlaying)
+            {
+                m_audioSource.Play();
+            }
         }
+        
+    }
+	
+	// Update is called once per frame
+	void Update ()
+    {
+        FireWeapons();
     }
 
     void FixedUpdate()

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveController : MonoBehaviour {
+public class MoveController : MonoBehaviour
+{
 
     private Rigidbody m_rigidBody;
 

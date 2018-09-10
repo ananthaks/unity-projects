@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Clipper_Tag
   - PlayerBolt
+  - Enemy
+  - Obstacle
+  - Asteroid
   layers:
   - Default
   - TransparentFX

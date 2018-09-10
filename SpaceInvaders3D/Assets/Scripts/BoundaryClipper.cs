@@ -18,7 +18,6 @@ public class BoundaryClipper : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        print("BoundaryClipper::Destroy");
         Destroy(other.gameObject);
     }
 
