@@ -51,8 +51,8 @@ public class EnemyController : MonoBehaviour
         if (other.tag == "Player")
         {
             // TODO: Make Explosion
+            Debug.Log("Collision with Player");
             gameController.OnPlayerDestroyed();
-
             Destroy(other.gameObject);
             Destroy(gameObject);
         }

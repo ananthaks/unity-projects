@@ -21,13 +21,26 @@ public class GameController : MonoBehaviour
     [SerializeField] float waveSpawnTime;
 
     public UnityEngine.UI.Text m_scoreText;
+    public UnityEngine.UI.Text m_finalScoreText;
+    public UnityEngine.UI.Text m_gameStatusText;
+
+    public GameObject m_finalMenuPanel;
 
     private int m_currentScore = 0;
+
+    private string m_gameWinText = "YOU WON !!!";
+    private string m_gameLoseText = "You Lost! Noob!";
     private string m_scoreDefaultText = "Score : ";
+
+    private bool m_gameInProgress = false;
 
     // Use this for initialization
     void Start ()
     {
+        m_gameInProgress = true;
+        m_currentScore = 0;
+        m_finalMenuPanel = GameObject.FindWithTag("MainMenuPanel");
+        m_finalMenuPanel.SetActive(false);
         StartCoroutine(SpawnWaves());
 	}
 	
@@ -44,6 +57,10 @@ public class GameController : MonoBehaviour
         {
             for (int count = 0; count < obstacleCount; count++)
             {
+                if(!m_gameInProgress)
+                {
+                    break;
+                }
 
                 if(enemyType == EnemyType.Asteroids)
                 {
@@ -70,6 +87,10 @@ public class GameController : MonoBehaviour
                     yield return new WaitForSeconds(spawnWaitTime);
                 }
             }
+            if(!m_gameInProgress)
+            {
+                break;
+            }
             yield return new WaitForSeconds(waveSpawnTime);
         }
     }
@@ -81,23 +102,27 @@ public class GameController : MonoBehaviour
 
     private void UpdateScoreText()
     {
-        m_scoreText.text = m_scoreDefaultText + m_currentScore;
-        Debug.Log(m_currentScore);
+        if(m_gameInProgress)
+        {
+            m_scoreText.text = m_scoreDefaultText + m_currentScore;
+            Debug.Log(m_currentScore);
+        }
     }
 
     public void OnPlayerWin()
     {
-        Debug.Log("Player Wins!");
+        m_finalMenuPanel.SetActive(true);
+        m_finalScoreText.text = m_scoreDefaultText + m_currentScore;
+        m_gameStatusText.text = m_gameWinText;
+        m_gameInProgress = false;
     }
 
     public void OnPlayerDestroyed()
     {
-        Debug.Log("Player Loses!");
+        m_finalMenuPanel.SetActive(true);
+        m_finalScoreText.text = m_scoreDefaultText + m_currentScore;
+        m_gameStatusText.text = m_gameLoseText;
+        m_gameInProgress = false;
     }
 
-    public void QuitGame()
-    {
-        print("Quiting Game");
-        Application.Quit();
-    }
 }
