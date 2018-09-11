@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour
     [SerializeField] EnemyType enemyType;
     [SerializeField] Vector3 spawnPoint;
     [SerializeField] int obstacleCount;
+    [SerializeField] int waveCount = 5;
     [SerializeField] float startWaitTime;
     [SerializeField] float spawnWaitTime;
     [SerializeField] float waveSpawnTime;
@@ -133,7 +134,7 @@ public class GameController : MonoBehaviour
     IEnumerator SpawnWaves()
     {
         yield return new WaitForSeconds(startWaitTime);
-        while(true)
+        for (int wave = 0; wave < waveCount; wave++)
         {
             for (int count = 0; count < obstacleCount; count++)
             {
@@ -173,6 +174,7 @@ public class GameController : MonoBehaviour
             }
             yield return new WaitForSeconds(waveSpawnTime);
         }
+        OnPlayerWin();
     }
     public void AddPoints(int points)
     {
