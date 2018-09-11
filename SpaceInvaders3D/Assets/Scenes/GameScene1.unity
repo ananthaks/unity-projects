@@ -1772,7 +1772,7 @@ Prefab:
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1906109109}
+      objectReference: {fileID: 1906109110}
     - target: {fileID: 114186291169570518, guid: 28bacf09957203641b1c679ac694c2ea,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -1782,6 +1782,11 @@ Prefab:
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114186291169570518, guid: 28bacf09957203641b1c679ac694c2ea,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28bacf09957203641b1c679ac694c2ea, type: 2}
@@ -1916,7 +1921,7 @@ Prefab:
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1895959421}
+      objectReference: {fileID: 1895959422}
     - target: {fileID: 114186291169570518, guid: 28bacf09957203641b1c679ac694c2ea,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -1940,28 +1945,18 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 224538128734728916, guid: 28bacf09957203641b1c679ac694c2ea,
     type: 2}
   m_PrefabInternal: {fileID: 1895959419}
---- !u!114 &1895959421 stripped
+--- !u!114 &1895959422 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114452005966300904, guid: 28bacf09957203641b1c679ac694c2ea,
     type: 2}
   m_PrefabInternal: {fileID: 1895959419}
   m_Script: {fileID: 11500000, guid: 31a98cf16d7de514d9030244f52b8254, type: 3}
---- !u!1 &1906109108 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1741462045366984, guid: 28bacf09957203641b1c679ac694c2ea,
+--- !u!114 &1906109110 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114452005966300904, guid: 28bacf09957203641b1c679ac694c2ea,
     type: 2}
   m_PrefabInternal: {fileID: 1710696042}
---- !u!114 &1906109109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1906109108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31a98cf16d7de514d9030244f52b8254, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1968572917
 Prefab:
   m_ObjectHideFlags: 0

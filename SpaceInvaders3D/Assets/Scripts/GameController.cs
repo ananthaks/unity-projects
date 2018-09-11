@@ -174,7 +174,11 @@ public class GameController : MonoBehaviour
             }
             yield return new WaitForSeconds(waveSpawnTime);
         }
-        OnPlayerWin();
+        if(m_gameInProgress)
+        {
+            OnPlayerWin();
+        }
+
     }
     public void AddPoints(int points)
     {
