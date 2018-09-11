@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     public UnityEngine.UI.Text m_gameStatusText;
 
     public GameObject m_finalMenuPanel;
+    public GameObject m_pauseMenuPanel;
 
     private int m_currentScore = 0;
 
@@ -33,22 +34,101 @@ public class GameController : MonoBehaviour
     private string m_scoreDefaultText = "Score : ";
 
     private bool m_gameInProgress = false;
+    private bool m_isGamePaused = false;
+
+    private float pauseBreak = 1.0f;
+    private float pauseTime = 0.0f;
+
+    private bool isKeyDown = false;
+    private bool isKeyUp = false;
 
     // Use this for initialization
     void Start ()
     {
         m_gameInProgress = true;
+        m_isGamePaused = false;
         m_currentScore = 0;
         m_finalMenuPanel = GameObject.FindWithTag("MainMenuPanel");
-        m_finalMenuPanel.SetActive(false);
+        m_pauseMenuPanel = GameObject.FindWithTag("PauseMenuPanel");
+
+        if (m_pauseMenuPanel != null)
+        {
+            m_pauseMenuPanel.SetActive(false);
+        }
+        if(m_finalMenuPanel != null)
+        {
+            m_finalMenuPanel.SetActive(false);
+        }
+
+        isKeyDown = false;
+        isKeyUp = false;
+
         StartCoroutine(SpawnWaves());
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
-		
-	}
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isKeyDown = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Escape) && isKeyDown)
+        {
+            isKeyUp = true;
+            isKeyDown = false;
+        }
+
+        if(isKeyUp && !isKeyDown)
+        {
+            EscPressed();
+            isKeyUp = false;
+        }
+    }
+
+    private void EscPressed()
+    {
+        if (m_isGamePaused)
+        {
+            ContinueGame();
+        }
+        else
+        {
+            PauseGame();
+        }
+    }
+
+    public void PauseGame()
+    {
+        if(m_isGamePaused)
+        {
+            return; // To prevent multiple calls
+        }
+
+        m_isGamePaused = true;
+        if(m_pauseMenuPanel != null)
+        {
+            m_pauseMenuPanel.SetActive(true);
+        }
+        Time.timeScale = 0;
+    }
+
+    public void ContinueGame()
+    {
+        if(!m_isGamePaused)
+        {
+            return;
+        }
+
+        Time.timeScale = 1;
+        m_isGamePaused = false;
+        if (m_pauseMenuPanel != null)
+        {
+            Debug.Log("Coming Here 2");
+            m_pauseMenuPanel.SetActive(false);
+        }
+    }
 
     IEnumerator SpawnWaves()
     {

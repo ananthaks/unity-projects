@@ -65,3 +65,6 @@ MonoBehaviour:
   spawnWaitTime: 0.5
   waveSpawnTime: 4
   m_scoreText: {fileID: 0}
+  m_finalScoreText: {fileID: 0}
+  m_gameStatusText: {fileID: 0}
+  m_finalMenuPanel: {fileID: 0}

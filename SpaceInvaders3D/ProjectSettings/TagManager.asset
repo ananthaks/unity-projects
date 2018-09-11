@@ -11,6 +11,7 @@ TagManager:
   - Asteroid
   - Bolt
   - MainMenuPanel
+  - PauseMenuPanel
   layers:
   - Default
   - TransparentFX

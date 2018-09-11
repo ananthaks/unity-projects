@@ -220,6 +220,8 @@ MonoBehaviour:
   playerExplosion: {fileID: 0}
   asteroidExplosion: {fileID: 0}
   enemyExplosion: {fileID: 0}
+  asteroidHitValue: 1
+  enemyHitValue: 2
 --- !u!114 &114600177524057698
 MonoBehaviour:
   m_ObjectHideFlags: 1
