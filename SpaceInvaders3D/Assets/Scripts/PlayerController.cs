@@ -29,11 +29,19 @@ public class PlayerController : MonoBehaviour
     // Private members
     private float nextFire = 0.0f;
 
+    private GameController m_gameController;
+
     // Use this for initialization
     void Start ()
     {
         m_rigidBody = GetComponent<Rigidbody>();
         m_audioSource = GetComponent<AudioSource>();
+
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            m_gameController = gameControllerObject.GetComponent<GameController>();
+        }
     }
 
     void FireWeapons()
@@ -48,7 +56,11 @@ public class PlayerController : MonoBehaviour
                 m_audioSource.Play();
             }
         }
-        
+
+        if (Input.GetButton("Fire2") && m_gameController != null)
+        {
+            m_gameController.FireAlternateGuns();
+        }
     }
 	
 	// Update is called once per frame

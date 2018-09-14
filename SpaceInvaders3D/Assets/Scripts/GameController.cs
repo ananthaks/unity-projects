@@ -7,7 +7,28 @@ public enum EnemyType
     Asteroids,
     Fighters,
     AsteroidAndFighter,
+    FighterFormation
 };
+
+[System.Serializable]
+public class GunShipFormation
+{
+    public GameObject m_gunShip;
+    public int m_numGunShips;
+    public float m_gunShipGap;
+    public Vector3 m_spawnPoint;
+}
+
+[System.Serializable]
+public class FighterFormation
+{
+    public GameObject m_fighter;
+    public int m_formationX;
+    public int m_formationZ;
+    public float m_formationGapX;
+    public float m_formationGapZ;
+    public Vector3 m_spawnPoint;
+}
 
 public class GameController : MonoBehaviour
 {
@@ -21,14 +42,21 @@ public class GameController : MonoBehaviour
     [SerializeField] float spawnWaitTime;
     [SerializeField] float waveSpawnTime;
 
-    public UnityEngine.UI.Text m_scoreText;
-    public UnityEngine.UI.Text m_finalScoreText;
-    public UnityEngine.UI.Text m_gameStatusText;
+    [SerializeField] UnityEngine.UI.Text m_scoreText;
+    [SerializeField] UnityEngine.UI.Text m_finalScoreText;
+    [SerializeField] UnityEngine.UI.Text m_gameStatusText;
 
-    public GameObject m_finalMenuPanel;
-    public GameObject m_pauseMenuPanel;
+    [SerializeField] GunShipFormation m_gunShipFormation;
+    [SerializeField] FighterFormation m_fighterFormation;
+
+    private List<GunshipController> m_gunShipControllers = new List<GunshipController>();
+    private EnemyController[,] m_enemyControllers;
+
+    private GameObject m_finalMenuPanel;
+    private GameObject m_pauseMenuPanel;
 
     private int m_currentScore = 0;
+    private int m_currentEnemyCount;
 
     private string m_gameWinText = "YOU WON !!!";
     private string m_gameLoseText = "You Lost! Noob!";
@@ -63,8 +91,17 @@ public class GameController : MonoBehaviour
 
         isKeyDown = false;
         isKeyUp = false;
+        SpawnGunShips();
 
-        StartCoroutine(SpawnWaves());
+        if (enemyType == EnemyType.FighterFormation)
+        {
+            SpawnEnemyFormation();
+            m_currentEnemyCount = m_fighterFormation.m_formationX * m_fighterFormation.m_formationZ;
+        }
+        else
+        {
+            StartCoroutine(SpawnWaves());
+        }
 	}
 
     // Update is called once per frame
@@ -88,6 +125,93 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void SpawnGunShips()
+    {
+        if(m_gunShipFormation.m_gunShip == null)
+        {
+            return;
+        }
+        bool isEvenFormation = m_gunShipFormation.m_numGunShips % 2 == 0;
+        Quaternion spawnRotation = Quaternion.identity;
+        float offset = 0;
+
+        for (int i = 1; i <= m_gunShipFormation.m_numGunShips; ++i)
+        {
+            if(isEvenFormation)
+            {
+                offset = (m_gunShipFormation.m_gunShipGap * (i - 1) / 2 + m_gunShipFormation.m_gunShipGap / 2) * (i % 2 == 0 ? 1 : -1);
+            }
+            else
+            {
+                offset = m_gunShipFormation.m_gunShipGap * (i / 2) * (i % 2 == 0 ? 1 : -1);
+            }
+
+            Vector3 spawnPoint = new Vector3
+            (
+            m_gunShipFormation.m_spawnPoint.x + offset,
+            m_gunShipFormation.m_spawnPoint.y,
+            m_gunShipFormation.m_spawnPoint.z
+            );
+
+            GameObject gameObject = Instantiate(m_gunShipFormation.m_gunShip, spawnPoint, spawnRotation) as GameObject;
+            GunshipController controller = gameObject.GetComponent<GunshipController>();
+            m_gunShipControllers.Add(controller);
+        }
+    }
+
+    private void SpawnEnemyFormation()
+    {
+        if(m_fighterFormation != null)
+        {
+            m_enemyControllers = new EnemyController[m_fighterFormation.m_formationX, m_fighterFormation.m_formationZ];
+            float offsetX = 0;
+            float offsetZ = 0;
+
+            for (int i = 1; i <= m_fighterFormation.m_formationX; ++i)
+            {
+
+                if (m_fighterFormation.m_formationX % 2 == 0)
+                {
+                    offsetX = (m_fighterFormation.m_formationGapX * (i - 1) / 2 + m_fighterFormation.m_formationGapX / 2) * (i % 2 == 0 ? 1 : -1);
+                }
+                else
+                {
+                    offsetX = m_fighterFormation.m_formationGapX * (i / 2) * (i % 2 == 0 ? 1 : -1);
+                }
+
+                for (int j = 1; j <= m_fighterFormation.m_formationZ; ++j)
+                {
+
+                    if (m_fighterFormation.m_formationZ % 2 == 0)
+                    {
+                        offsetZ = (m_fighterFormation.m_formationGapZ * (j - 1) / 2 + m_fighterFormation.m_formationGapZ / 2) * (j % 2 == 0 ? 1 : -1);
+                    }
+                    else
+                    {
+                        offsetZ = m_fighterFormation.m_formationGapZ * (j / 2) * (j % 2 == 0 ? 1 : -1);
+                    }
+
+                    Vector3 spawnPoint = new Vector3
+                    (
+                    m_fighterFormation.m_spawnPoint.x + offsetX,
+                    m_fighterFormation.m_spawnPoint.y,
+                    m_fighterFormation.m_spawnPoint.z + offsetZ
+                    );
+
+                    // Spawn it BITCH!
+                    Quaternion spawnRotation = Quaternion.identity;
+                    GameObject gameObject = Instantiate(m_fighterFormation.m_fighter, spawnPoint, spawnRotation) as GameObject;
+                    m_enemyControllers[i - 1, j - 1] = gameObject.GetComponent<EnemyController>();
+
+                    if(j != m_fighterFormation.m_formationZ)
+                    {
+                        m_enemyControllers[i - 1, j - 1].EnableDisableFire(false);
+                    }
+                }
+            }
+        }
+    }
+
     private void EscPressed()
     {
         if (m_isGamePaused)
@@ -97,6 +221,45 @@ public class GameController : MonoBehaviour
         else
         {
             PauseGame();
+        }
+    }
+
+    public void ResetFormation()
+    {
+        if (enemyType == EnemyType.FighterFormation)
+        {
+            m_currentEnemyCount--;
+
+            for (int i = 1; i <= m_fighterFormation.m_formationX; ++i)
+            {
+                for (int j = 1; j <= m_fighterFormation.m_formationZ; ++j)
+                {
+                    if (m_enemyControllers[i - 1, j - 1] == null)
+                    {
+                        if(j > 1)
+                        {
+                            m_enemyControllers[i - 1, j - 2].EnableDisableFire(true);
+                        }
+                    }
+                }
+            }
+
+            if(m_currentEnemyCount == 0)
+            {
+                OnPlayerWin();
+            }
+        }
+    }
+
+    public void FireAlternateGuns()
+    {
+        for(int i = 0; i < m_gunShipControllers.Count; ++i)
+        {
+            GunshipController controller = m_gunShipControllers[i];
+            if(controller != null)
+            {
+                controller.FireWeapons();
+            }
         }
     }
 
@@ -167,6 +330,7 @@ public class GameController : MonoBehaviour
                     Instantiate(isFighter ? enemyFighters[0] : obstacles[asteroidType], spawnPosition, spawnRotation);
                     yield return new WaitForSeconds(spawnWaitTime);
                 }
+                
             }
             if(!m_gameInProgress)
             {

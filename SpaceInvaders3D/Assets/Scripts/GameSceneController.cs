@@ -10,6 +10,12 @@ public class GameSceneController : MonoBehaviour
         SceneManager.LoadScene(sceneIndex);
     }
 
+    public void RestartCurrentScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+
     public void QuitGame()
     {
         print("Quiting Game");

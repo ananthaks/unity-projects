@@ -51,11 +51,18 @@ public class BoltController : MonoBehaviour
             gameController.AddPoints(enemyHitValue);
             Destroy(other.gameObject);
             Destroy(gameObject);
+            gameController.ResetFormation();
         }
         else if (other.tag == "Bolt")
         {
             // TODO: Make Bolt with Bolt Explosion
             Destroy(other.gameObject);
+            Destroy(gameObject);
+        }
+        else if (other.tag == "GunShip")
+        {
+            GunshipController gunShipObjectController = other.gameObject.GetComponent<GunshipController>();
+            gunShipObjectController.OnShotHit();
             Destroy(gameObject);
         }
     }

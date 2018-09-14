@@ -12,6 +12,7 @@ TagManager:
   - Bolt
   - MainMenuPanel
   - PauseMenuPanel
+  - GunShip
   layers:
   - Default
   - TransparentFX

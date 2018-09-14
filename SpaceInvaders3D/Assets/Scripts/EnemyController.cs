@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-
     private Rigidbody m_rigidBody;
     //private AudioSource m_audioSource;
 
@@ -16,6 +15,8 @@ public class EnemyController : MonoBehaviour
 
     // Private members
     private float nextFire = 0.0f;
+
+    private bool m_isFiringEnabled = true;
 
     private GameController gameController;
 
@@ -32,17 +33,17 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    public void EnableDisableFire(bool enable)
+    {
+        m_isFiringEnabled = enable;
+    }
+
     void FireWeapons()
     {
-        if (Time.time > nextFire)
+        if (m_isFiringEnabled && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
             Instantiate(MainWeaponBolt, shotspawn.position, shotspawn.rotation);
-
-            //if (!m_audioSource.isPlaying)
-            //{
-                //m_audioSource.Play();
-            //}
         }
     }
 
@@ -56,8 +57,13 @@ public class EnemyController : MonoBehaviour
             Destroy(other.gameObject);
             Destroy(gameObject);
         }
+        else if (other.tag == "GunShip")
+        {
+            GunshipController gunShipObjectController = other.gameObject.GetComponent<GunshipController>();
+            gunShipObjectController.OnShotHit();
+            Destroy(gameObject);
+        }
     }
-
 
     // Update is called once per frame
     void Update()
