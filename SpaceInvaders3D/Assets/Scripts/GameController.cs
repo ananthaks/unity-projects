@@ -191,19 +191,21 @@ public class GameController : MonoBehaviour
                         offsetZ = m_fighterFormation.m_formationGapZ * (j / 2) * (j % 2 == 0 ? 1 : -1);
                     }
 
-                    Vector3 spawnPoint = new Vector3
+                    Vector3 spawnPointLocal = new Vector3
                     (
                     m_fighterFormation.m_spawnPoint.x + offsetX,
                     m_fighterFormation.m_spawnPoint.y,
                     m_fighterFormation.m_spawnPoint.z + offsetZ
                     );
 
-                    // Spawn it BITCH!
+                    // Spawn it
                     Quaternion spawnRotation = Quaternion.identity;
-                    GameObject gameObject = Instantiate(m_fighterFormation.m_fighter, spawnPoint, spawnRotation) as GameObject;
-                    m_enemyControllers[i - 1, j - 1] = gameObject.GetComponent<EnemyController>();
+                    GameObject newGameObject = Instantiate(m_fighterFormation.m_fighter, spawnPointLocal, spawnRotation) as GameObject;
+                    m_enemyControllers[i - 1, j - 1] = newGameObject.GetComponent<EnemyController>();
 
-                    if(j != m_fighterFormation.m_formationZ)
+                    m_enemyControllers[i - 1, j - 1].SetIndex(i - 1, j - 1);
+
+                    if(j != 1)
                     {
                         m_enemyControllers[i - 1, j - 1].EnableDisableFire(false);
                     }
@@ -224,26 +226,26 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void ResetFormation()
+    public void ResetFormation(EnemyController enemyController)
     {
         if (enemyType == EnemyType.FighterFormation)
         {
-            m_currentEnemyCount--;
-
-            for (int i = 1; i <= m_fighterFormation.m_formationX; ++i)
+            if(enemyController != null)
             {
-                for (int j = 1; j <= m_fighterFormation.m_formationZ; ++j)
+                int indX = enemyController.GetIndexX();
+                int indZ = enemyController.GetIndexZ();
+
+                Debug.Log("Enabling second level to fire");
+                Debug.Log(indZ);
+
+                if(indX >= 0 && indZ >= 0 && indZ < (m_fighterFormation.m_formationZ - 1))
                 {
-                    if (m_enemyControllers[i - 1, j - 1] == null)
-                    {
-                        if(j > 1)
-                        {
-                            m_enemyControllers[i - 1, j - 2].EnableDisableFire(true);
-                        }
-                    }
+                    
+                    m_enemyControllers[indX, indZ + 1].EnableDisableFire(true); 
                 }
             }
-
+             
+            m_currentEnemyCount--;
             if(m_currentEnemyCount == 0)
             {
                 OnPlayerWin();

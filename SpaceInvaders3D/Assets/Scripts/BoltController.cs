@@ -51,7 +51,7 @@ public class BoltController : MonoBehaviour
             gameController.AddPoints(enemyHitValue);
             Destroy(other.gameObject);
             Destroy(gameObject);
-            gameController.ResetFormation();
+            gameController.ResetFormation(other.gameObject.GetComponent<EnemyController>());
         }
         else if (other.tag == "Bolt")
         {

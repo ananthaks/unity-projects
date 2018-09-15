@@ -20,6 +20,9 @@ public class EnemyController : MonoBehaviour
 
     private GameController gameController;
 
+    private int m_indexX;
+    private int m_indexZ;
+
     // Use this for initialization
     void Start()
     {
@@ -36,6 +39,22 @@ public class EnemyController : MonoBehaviour
     public void EnableDisableFire(bool enable)
     {
         m_isFiringEnabled = enable;
+    }
+
+    public void SetIndex(int indexX, int indexZ)
+    {
+        m_indexX = indexX;
+        m_indexZ = indexZ;
+    }
+
+    public int GetIndexX()
+    {
+        return m_indexX;
+    }
+
+    public int GetIndexZ()
+    {
+        return m_indexZ;
     }
 
     void FireWeapons()
