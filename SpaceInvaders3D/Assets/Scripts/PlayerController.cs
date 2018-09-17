@@ -11,9 +11,14 @@ public class Boundary
     public float yMax = 12.0f;
 }
 
+public enum AxisMovement
+{
+    AxisY,
+    AxisZ
+}
+
 public class PlayerController : MonoBehaviour
 {
-
     private Rigidbody m_rigidBody;
     private AudioSource m_audioSource;
 
@@ -25,11 +30,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float tilt = 4.0f;
     [SerializeField] float fireRate = 0.25f;
     [SerializeField] Boundary boundary;
+
+    [SerializeField] AxisMovement m_axisMovement;
+    [SerializeField] int numHitsForceField;
+    private int m_currentHitsForceField;
     
     // Private members
     private float nextFire = 0.0f;
 
     private GameController m_gameController;
+
+    private GameObject m_forceField;
+
 
     // Use this for initialization
     void Start ()
@@ -62,11 +74,51 @@ public class PlayerController : MonoBehaviour
             m_gameController.FireAlternateGuns();
         }
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            if(m_forceField == null)
+            {
+                m_gameController.OnPlayerDestroyed();
+                Destroy(other.gameObject);
+                Destroy(gameObject);
+            }
+            else
+            {
+                m_gameController.OnPlayerHit(gameObject.GetComponent<Collider>());
+                Destroy(other.gameObject, 1.5f);
+            }
+            
+        }
+        if(other.tag == "ForceField")
+        {
+            m_forceField = GameObject.FindWithTag("ForceField");
+            m_currentHitsForceField = numHitsForceField;
+        }
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         FireWeapons();
+    }
+
+    public bool OnPlayerHit()
+    {
+        if(m_currentHitsForceField == 0)
+        {
+            return true;
+        }
+
+        m_currentHitsForceField--;
+
+        if(m_currentHitsForceField == 0)
+        {
+            Destroy(m_forceField);
+        }
+        return false;
     }
 
     void FixedUpdate()
@@ -75,17 +127,28 @@ public class PlayerController : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(moveHorizontal, moveVertical, 0.0f);
+
+        float moveForwardZ = (m_axisMovement == AxisMovement.AxisZ) ? moveVertical : 0;
+        float moveTopY = (m_axisMovement == AxisMovement.AxisY) ? moveVertical : 0;
+
+        Vector3 movement = new Vector3(moveHorizontal, moveTopY, moveForwardZ);
         m_rigidBody.velocity = movement * speed;
+
+        float posY = (m_axisMovement == AxisMovement.AxisY) ? Mathf.Clamp(m_rigidBody.position.y, boundary.yMin, boundary.yMax) : 0;
+        float posZ = (m_axisMovement == AxisMovement.AxisZ) ? Mathf.Clamp(m_rigidBody.position.z, boundary.yMin, boundary.yMax) : 0;
 
         // Constrain to boundary
         m_rigidBody.position = new Vector3
             (
             Mathf.Clamp(m_rigidBody.position.x, boundary.xMin, boundary.xMax),
-            Mathf.Clamp(m_rigidBody.position.y, boundary.yMin, boundary.yMax),
-            0 
+            posY,
+            posZ
             );
 
+        if(m_forceField != null)
+        {
+            m_forceField.transform.position = m_rigidBody.position;
+        }
 
         m_rigidBody.rotation = Quaternion.Euler(m_rigidBody.velocity.y * -tilt, 0.0f, m_rigidBody.velocity.x * -tilt);
     }

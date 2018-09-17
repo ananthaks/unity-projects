@@ -68,19 +68,15 @@ public class EnemyController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
-        {
-            // TODO: Make Explosion
-            Debug.Log("Collision with Player");
-            gameController.OnPlayerDestroyed();
-            Destroy(other.gameObject);
-            Destroy(gameObject);
-        }
-        else if (other.tag == "GunShip")
+        if (other.tag == "GunShip")
         {
             GunshipController gunShipObjectController = other.gameObject.GetComponent<GunshipController>();
             gunShipObjectController.OnShotHit();
             Destroy(gameObject);
+        }
+        if(other.tag == "ForceField")
+        {
+            Debug.Log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
         }
     }
 

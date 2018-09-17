@@ -8,8 +8,7 @@ public class BoltController : MonoBehaviour
     [SerializeField] GameObject asteroidExplosion;
     [SerializeField] GameObject enemyExplosion;
 
-    [SerializeField] int asteroidHitValue = 1;
-    [SerializeField] int enemyHitValue = 2;
+    [SerializeField] float explosionLifeTime;
 
     private GameController gameController;
 
@@ -34,24 +33,39 @@ public class BoltController : MonoBehaviour
         if (other.tag == "Obstacle")
         {
             // TODO: Asteroid Explosion
-            gameController.AddPoints(asteroidHitValue);
-            Destroy(other.gameObject);
+            gameController.OnAsteroidHit(other);
+            if (asteroidExplosion != null)
+            {
+                GameObject explosionObject = Instantiate(asteroidExplosion, transform.position, transform.rotation) as GameObject;
+                Destroy(explosionObject, explosionLifeTime);
+            }
             Destroy(gameObject);
         }
         else if (other.tag == "Player")
         {
             // TODO: Make Player Explosion
-            gameController.OnPlayerDestroyed();
-            Destroy(other.gameObject);
+            gameController.OnPlayerHit(other);
+
+            if (playerExplosion != null)
+            {
+                GameObject explosionObject = Instantiate(playerExplosion, transform.position, transform.rotation) as GameObject;
+                Destroy(explosionObject, explosionLifeTime);
+            }
+
             Destroy(gameObject);
         }
         else if (other.tag == "Enemy")
         {
             // TODO: Make Enemy Explosion
-            gameController.AddPoints(enemyHitValue);
-            Destroy(other.gameObject);
+            gameController.OnEnemytHit(other);
+
+            if(enemyExplosion != null)
+            {
+                GameObject explosionObject = Instantiate(enemyExplosion, transform.position, transform.rotation) as GameObject;
+                Destroy(explosionObject, explosionLifeTime);
+            }
+
             Destroy(gameObject);
-            gameController.ResetFormation(other.gameObject.GetComponent<EnemyController>());
         }
         else if (other.tag == "Bolt")
         {
@@ -61,8 +75,7 @@ public class BoltController : MonoBehaviour
         }
         else if (other.tag == "GunShip")
         {
-            GunshipController gunShipObjectController = other.gameObject.GetComponent<GunshipController>();
-            gunShipObjectController.OnShotHit();
+            gameController.OnGunShipHit(other);
             Destroy(gameObject);
         }
     }

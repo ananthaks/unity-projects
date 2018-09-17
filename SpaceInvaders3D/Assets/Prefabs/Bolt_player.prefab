@@ -217,11 +217,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ef6570406ff15f469d512ff36ff997e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerExplosion: {fileID: 0}
-  asteroidExplosion: {fileID: 0}
-  enemyExplosion: {fileID: 0}
-  asteroidHitValue: 1
-  enemyHitValue: 2
+  playerExplosion: {fileID: 1383573554231184, guid: 13a2b74850189714f86d628337240156,
+    type: 2}
+  asteroidExplosion: {fileID: 1574221069466826, guid: a66c877333f0fac48988bf7840b789f1,
+    type: 2}
+  enemyExplosion: {fileID: 1574221069466826, guid: a66c877333f0fac48988bf7840b789f1,
+    type: 2}
+  explosionLifeTime: 2
 --- !u!114 &114600177524057698
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -42,6 +42,9 @@ public class GameController : MonoBehaviour
     [SerializeField] float spawnWaitTime;
     [SerializeField] float waveSpawnTime;
 
+    [SerializeField] int maxPlayerHealth = 100;
+    [SerializeField] GameObject playerHealthBar;
+
     [SerializeField] UnityEngine.UI.Text m_scoreText;
     [SerializeField] UnityEngine.UI.Text m_finalScoreText;
     [SerializeField] UnityEngine.UI.Text m_gameStatusText;
@@ -71,6 +74,8 @@ public class GameController : MonoBehaviour
     private bool isKeyDown = false;
     private bool isKeyUp = false;
 
+    private int m_currentPlayerHealth;
+
     // Use this for initialization
     void Start ()
     {
@@ -92,6 +97,12 @@ public class GameController : MonoBehaviour
         isKeyDown = false;
         isKeyUp = false;
         SpawnGunShips();
+
+        m_currentPlayerHealth = maxPlayerHealth;
+        if (playerHealthBar != null)
+        {
+            playerHealthBar.GetComponent<SimpleHealthBar>().UpdateBar(m_currentPlayerHealth, maxPlayerHealth);
+        }
 
         if (enemyType == EnemyType.FighterFormation)
         {
@@ -226,6 +237,57 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void OnPlayerHit(Collider hitCollider)
+    {
+        bool isHitSuccess = true;
+        PlayerController playerController = hitCollider.gameObject.GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            isHitSuccess = playerController.OnPlayerHit();
+        }
+
+        Debug.Log("");
+
+        if (!isHitSuccess)
+        {
+            return;
+        }
+
+        m_currentPlayerHealth -= 20;
+        m_currentPlayerHealth = Mathf.Max(m_currentPlayerHealth, 0);
+
+        if (playerHealthBar != null)
+        {
+            playerHealthBar.GetComponent<SimpleHealthBar>().UpdateBar(m_currentPlayerHealth, maxPlayerHealth);
+        }
+
+        if(m_currentPlayerHealth == 0)
+        {
+            OnPlayerDestroyed();
+            Destroy(hitCollider.gameObject);
+        }
+    }
+
+    public void OnGunShipHit(Collider hitCollider)
+    {
+        GunshipController controller = hitCollider.gameObject.GetComponent<GunshipController>();
+        controller.OnShotHit();
+    }
+
+    public void OnEnemytHit(Collider hitCollider)
+    {
+        AddPoints(2);
+        Destroy(hitCollider.gameObject);
+        ResetFormation(hitCollider.gameObject.GetComponent<EnemyController>());
+    }
+
+    public void OnAsteroidHit(Collider hitCollider)
+    {
+        AddPoints(1);
+        Destroy(hitCollider.gameObject);
+    }
+
+
     public void ResetFormation(EnemyController enemyController)
     {
         if (enemyType == EnemyType.FighterFormation)
@@ -234,9 +296,6 @@ public class GameController : MonoBehaviour
             {
                 int indX = enemyController.GetIndexX();
                 int indZ = enemyController.GetIndexZ();
-
-                Debug.Log("Enabling second level to fire");
-                Debug.Log(indZ);
 
                 if(indX >= 0 && indZ >= 0 && indZ < (m_fighterFormation.m_formationZ - 1))
                 {
@@ -291,7 +350,6 @@ public class GameController : MonoBehaviour
         m_isGamePaused = false;
         if (m_pauseMenuPanel != null)
         {
-            Debug.Log("Coming Here 2");
             m_pauseMenuPanel.SetActive(false);
         }
     }
@@ -357,7 +415,6 @@ public class GameController : MonoBehaviour
         if(m_gameInProgress)
         {
             m_scoreText.text = m_scoreDefaultText + m_currentScore;
-            Debug.Log(m_currentScore);
         }
     }
 
