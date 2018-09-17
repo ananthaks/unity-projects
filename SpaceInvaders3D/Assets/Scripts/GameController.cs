@@ -30,6 +30,22 @@ public class FighterFormation
     public Vector3 m_spawnPoint;
 }
 
+[System.Serializable]
+public class RandomPickUpsSpawns
+{
+    public GameObject[] m_pickUpObjects;
+    public int timeBetweenPickups;
+    public Vector3 boundaryMinLimit;
+    public Vector3 boundaryMaxLimit;
+}
+
+public enum PickUpState
+{
+    NoActivePickUp,
+    PickUpSpawned,
+    PickUpActive,
+}
+
 public class GameController : MonoBehaviour
 {
     [SerializeField] GameObject[] obstacles = new GameObject[4];
@@ -51,6 +67,7 @@ public class GameController : MonoBehaviour
 
     [SerializeField] GunShipFormation m_gunShipFormation;
     [SerializeField] FighterFormation m_fighterFormation;
+    [SerializeField] RandomPickUpsSpawns m_randomPickSpawns;
 
     private List<GunshipController> m_gunShipControllers = new List<GunshipController>();
     private EnemyController[,] m_enemyControllers;
@@ -62,7 +79,7 @@ public class GameController : MonoBehaviour
     private int m_currentEnemyCount;
 
     private string m_gameWinText = "YOU WON !!!";
-    private string m_gameLoseText = "You Lost! Noob!";
+    private string m_gameLoseText = "You Lost!";
     private string m_scoreDefaultText = "Score : ";
 
     private bool m_gameInProgress = false;
@@ -73,6 +90,8 @@ public class GameController : MonoBehaviour
 
     private bool isKeyDown = false;
     private bool isKeyUp = false;
+
+    private PickUpState m_pickUpState;
 
     private int m_currentPlayerHealth;
 
@@ -108,6 +127,13 @@ public class GameController : MonoBehaviour
         {
             SpawnEnemyFormation();
             m_currentEnemyCount = m_fighterFormation.m_formationX * m_fighterFormation.m_formationZ;
+
+            m_pickUpState = PickUpState.NoActivePickUp;
+
+            if (m_randomPickSpawns != null)
+            {
+                StartCoroutine(SpawnRandomPickups());
+            }
         }
         else
         {
@@ -237,6 +263,20 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void OnPlayerPickUp(PickUpState pickupState)
+    {
+        m_pickUpState = pickupState;
+    }
+
+    public void OnPlayerHealth()
+    {
+        m_currentPlayerHealth = maxPlayerHealth;
+        if (playerHealthBar != null)
+        {
+            playerHealthBar.GetComponent<SimpleHealthBar>().UpdateBar(m_currentPlayerHealth, maxPlayerHealth);
+        }
+    }
+
     public void OnPlayerHit(Collider hitCollider)
     {
         bool isHitSuccess = true;
@@ -299,7 +339,6 @@ public class GameController : MonoBehaviour
 
                 if(indX >= 0 && indZ >= 0 && indZ < (m_fighterFormation.m_formationZ - 1))
                 {
-                    
                     m_enemyControllers[indX, indZ + 1].EnableDisableFire(true); 
                 }
             }
@@ -353,6 +392,30 @@ public class GameController : MonoBehaviour
             m_pauseMenuPanel.SetActive(false);
         }
     }
+
+    IEnumerator SpawnRandomPickups()
+    {
+        yield return new WaitForSeconds(startWaitTime);
+        while(true)
+        {
+            if(m_pickUpState == PickUpState.NoActivePickUp)
+            {
+                int pickUpType = (int)(Random.Range(0, m_randomPickSpawns.m_pickUpObjects.Length));
+
+                Vector3 spawnPosition = new Vector3(Random.Range(m_randomPickSpawns.boundaryMinLimit.x, m_randomPickSpawns.boundaryMaxLimit.x),
+                    Random.Range(m_randomPickSpawns.boundaryMinLimit.y, m_randomPickSpawns.boundaryMaxLimit.y),
+                    Random.Range(m_randomPickSpawns.boundaryMinLimit.z, m_randomPickSpawns.boundaryMaxLimit.z));
+
+                Quaternion spawnRotation = Quaternion.identity;
+                Instantiate(m_randomPickSpawns.m_pickUpObjects[pickUpType], spawnPosition, spawnRotation);
+
+                m_pickUpState = PickUpState.PickUpSpawned;
+            }
+
+            yield return new WaitForSeconds(m_randomPickSpawns.timeBetweenPickups);
+        }
+    }
+
 
     IEnumerator SpawnWaves()
     {

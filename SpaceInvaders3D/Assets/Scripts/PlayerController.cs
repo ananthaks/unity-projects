@@ -88,6 +88,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 m_gameController.OnPlayerHit(gameObject.GetComponent<Collider>());
+                m_gameController.OnEnemytHit(other);
                 Destroy(other.gameObject, 1.5f);
             }
             
@@ -96,6 +97,17 @@ public class PlayerController : MonoBehaviour
         {
             m_forceField = GameObject.FindWithTag("ForceField");
             m_currentHitsForceField = numHitsForceField;
+            m_gameController.OnPlayerPickUp(PickUpState.PickUpActive);
+        }
+
+        if (other.tag == "Health")
+        {
+            m_gameController.OnPlayerPickUp(PickUpState.PickUpActive);
+            m_gameController.OnPlayerHealth();
+            Debug.Log(other.tag);
+            SimpleHealthBar_SpaceshipExample.HealthPickupController hCon = other.gameObject.GetComponentInChildren<SimpleHealthBar_SpaceshipExample.HealthPickupController>();
+            hCon.Kill();
+            Destroy(other);
         }
     }
 
@@ -116,6 +128,7 @@ public class PlayerController : MonoBehaviour
 
         if(m_currentHitsForceField == 0)
         {
+            m_gameController.OnPlayerPickUp(PickUpState.NoActivePickUp);
             Destroy(m_forceField);
         }
         return false;
@@ -123,10 +136,8 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
- 
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
-
 
         float moveForwardZ = (m_axisMovement == AxisMovement.AxisZ) ? moveVertical : 0;
         float moveTopY = (m_axisMovement == AxisMovement.AxisY) ? moveVertical : 0;

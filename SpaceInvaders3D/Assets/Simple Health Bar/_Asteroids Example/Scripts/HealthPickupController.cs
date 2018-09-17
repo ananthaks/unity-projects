@@ -39,27 +39,23 @@ namespace SimpleHealthBar_SpaceshipExample
 	
 		void Update ()
 		{
-			// If the asteroid is out of the screen...
-			if( Mathf.Abs( transform.position.x ) > Camera.main.orthographicSize * Camera.main.aspect * 1.3f || Mathf.Abs( transform.position.z ) > Camera.main.orthographicSize * 1.3f )
-			{
-				// If this asteroid can be destoryed, then commence destruction!
-				if( canDestroy == true )
-					Destroy( gameObject );
-			}
+			
 		}
+
+        public void Kill()
+        {
+            Debug.Log("OnDestory");
+            mySprite.enabled = false;
+            if(myRigidbody != null)
+            {
+                myRigidbody.isKinematic = true;
+            }
+            particles.Stop();
+        }
 
 		void OnTriggerEnter ( Collider theCollider )
 		{
-			// If the collision was from the player...
-			if( theCollider.gameObject.name == "Player" && canPickup == true )
-			{
-				canPickup = false;
-				mySprite.enabled = false;
-				PlayerHealth.Instance.HealPlayer();
-				myRigidbody.isKinematic = true;
-				particles.Stop();
-				Destroy( gameObject, 3.0f );
-			}
+
 		}
 	}
 }
