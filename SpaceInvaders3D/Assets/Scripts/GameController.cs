@@ -69,6 +69,12 @@ public class GameController : MonoBehaviour
     [SerializeField] FighterFormation m_fighterFormation;
     [SerializeField] RandomPickUpsSpawns m_randomPickSpawns;
 
+    [SerializeField] GameObject playerExplosion;
+    [SerializeField] GameObject asteroidExplosion;
+    [SerializeField] GameObject enemyExplosion;
+
+    [SerializeField] float explosionLifeTime;
+
     private List<GunshipController> m_gunShipControllers = new List<GunshipController>();
     private EnemyController[,] m_enemyControllers;
 
@@ -293,6 +299,12 @@ public class GameController : MonoBehaviour
             return;
         }
 
+        if (playerExplosion != null)
+        {
+            GameObject explosionObject = Instantiate(playerExplosion, hitCollider.gameObject.transform.position, hitCollider.gameObject.transform.rotation) as GameObject;
+            Destroy(explosionObject, explosionLifeTime);
+        }
+
         m_currentPlayerHealth -= 20;
         m_currentPlayerHealth = Mathf.Max(m_currentPlayerHealth, 0);
 
@@ -317,6 +329,12 @@ public class GameController : MonoBehaviour
     public void OnEnemytHit(Collider hitCollider)
     {
         AddPoints(2);
+        if (enemyExplosion != null)
+        {
+            GameObject explosionObject = Instantiate(enemyExplosion, hitCollider.gameObject.transform.position, hitCollider.gameObject.transform.rotation) as GameObject;
+            Destroy(explosionObject, explosionLifeTime);
+        }
+
         Destroy(hitCollider.gameObject);
         ResetFormation(hitCollider.gameObject.GetComponent<EnemyController>());
     }
@@ -324,6 +342,11 @@ public class GameController : MonoBehaviour
     public void OnAsteroidHit(Collider hitCollider)
     {
         AddPoints(1);
+        if (asteroidExplosion != null)
+        {
+            GameObject explosionObject = Instantiate(asteroidExplosion, hitCollider.gameObject.transform.position, hitCollider.gameObject.transform.rotation) as GameObject;
+            Destroy(explosionObject, explosionLifeTime);
+        }
         Destroy(hitCollider.gameObject);
     }
 

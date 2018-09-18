@@ -4,13 +4,8 @@ using UnityEngine;
 
 public class BoltController : MonoBehaviour
 {
-    [SerializeField] GameObject playerExplosion;
-    [SerializeField] GameObject asteroidExplosion;
-    [SerializeField] GameObject enemyExplosion;
-
-    [SerializeField] float explosionLifeTime;
-
     private GameController gameController;
+    private bool isActive;
 
     // Use this for initialization
     void Start ()
@@ -20,6 +15,7 @@ public class BoltController : MonoBehaviour
         {
             gameController = gameControllerObject.GetComponent<GameController>();
         }
+        isActive = true;
     }
 	
 	// Update is called once per frame
@@ -30,53 +26,47 @@ public class BoltController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if(!isActive)
+        {
+            return;
+        }
+
         if (other.tag == "Obstacle")
         {
-            // TODO: Asteroid Explosion
             gameController.OnAsteroidHit(other);
-            if (asteroidExplosion != null)
-            {
-                GameObject explosionObject = Instantiate(asteroidExplosion, transform.position, transform.rotation) as GameObject;
-                Destroy(explosionObject, explosionLifeTime);
-            }
-            Destroy(gameObject);
+            OnHit();
         }
         else if (other.tag == "Player")
         {
-            // TODO: Make Player Explosion
             gameController.OnPlayerHit(other);
-
-            if (playerExplosion != null)
-            {
-                GameObject explosionObject = Instantiate(playerExplosion, transform.position, transform.rotation) as GameObject;
-                Destroy(explosionObject, explosionLifeTime);
-            }
-
-            Destroy(gameObject);
+            OnHit();
         }
         else if (other.tag == "Enemy")
         {
-            // TODO: Make Enemy Explosion
             gameController.OnEnemytHit(other);
-
-            if(enemyExplosion != null)
-            {
-                GameObject explosionObject = Instantiate(enemyExplosion, transform.position, transform.rotation) as GameObject;
-                Destroy(explosionObject, explosionLifeTime);
-            }
-
-            Destroy(gameObject);
+            OnHit();
         }
         else if (other.tag == "Bolt")
         {
-            // TODO: Make Bolt with Bolt Explosion
             Destroy(other.gameObject);
-            Destroy(gameObject);
+            OnHit();
         }
         else if (other.tag == "GunShip")
         {
             gameController.OnGunShipHit(other);
-            Destroy(gameObject);
+            OnHit();
         }
     }
+
+    private void OnHit()
+    {
+        VolumetricLines.VolumetricLineBehavior behavior = GetComponentInChildren<VolumetricLines.VolumetricLineBehavior>();
+        if(behavior != null)
+        {
+            behavior.LineColor = Color.black;
+        }
+        isActive = false;
+
+    }
+
 }

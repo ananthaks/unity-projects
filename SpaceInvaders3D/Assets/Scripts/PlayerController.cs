@@ -79,18 +79,10 @@ public class PlayerController : MonoBehaviour
     {
         if (other.tag == "Enemy")
         {
-            if(m_forceField == null)
-            {
-                m_gameController.OnPlayerDestroyed();
-                Destroy(other.gameObject);
-                Destroy(gameObject);
-            }
-            else
-            {
+            
                 m_gameController.OnPlayerHit(gameObject.GetComponent<Collider>());
                 m_gameController.OnEnemytHit(other);
-                Destroy(other.gameObject, 1.5f);
-            }
+                Destroy(other.gameObject, 2.5f);
             
         }
         if(other.tag == "ForceField")
